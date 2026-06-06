@@ -1,0 +1,7 @@
+{"id":"cli:agent:list","result":{"agents":[
+{"agent":"claude","agent_status":"idle","cwd":"/Users/x/brain","pane_id":"w1-1","tab_id":"w1:1","workspace_id":"w1"},
+{"agent":"claude","agent_status":"working","cwd":"/Users/x/proj-a","pane_id":"w1-2","tab_id":"w1:2","workspace_id":"w1"},
+{"agent":"claude","agent_status":"blocked","cwd":"/Users/x/proj-b","pane_id":"w1-3","tab_id":"w1:3","workspace_id":"w1"},
+{"agent":"claude","agent_status":"done","cwd":"/Users/x/proj-c","pane_id":"w1-4","tab_id":"w1:4","workspace_id":"w1"},
+{"agent":"claude","agent_status":"reticulating-splines","cwd":"/Users/x/proj-d","pane_id":"w1-5","tab_id":"w1:5","workspace_id":"w1"}
+],"type":"agent_list"}}

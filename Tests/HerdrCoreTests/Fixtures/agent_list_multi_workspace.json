@@ -1,0 +1,7 @@
+{"id":"cli:agent:list","result":{"agents":[
+{"agent":"claude","agent_status":"idle","cwd":"/Users/x/brain","pane_id":"wA-1","tab_id":"wA:1","workspace_id":"wA"},
+{"agent":"claude","agent_status":"idle","cwd":"/Users/x/brain","pane_id":"wA-2","tab_id":"wA:2","workspace_id":"wA"},
+{"agent":"claude","agent_status":"working","cwd":"/Users/x/herdr-menu-bar","pane_id":"wB-1","tab_id":"wB:1","workspace_id":"wB"},
+{"agent":"claude","agent_status":"idle","cwd":"/Users/x/herdr-menu-bar","pane_id":"wC-1","tab_id":"wC:1","workspace_id":"wC"},
+{"agent":"codex","agent_status":"idle","cwd":"/Users/x/herdr-menu-bar","pane_id":"wC-2","tab_id":"wC:1","workspace_id":"wC"}
+],"type":"agent_list"}}

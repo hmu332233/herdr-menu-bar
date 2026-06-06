@@ -1,0 +1,27 @@
+# SwiftPM
+.build/
+.swiftpm/
+Package.resolved
+
+# 빌드 산출물 (.app 번들)
+dist/
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+
+# macOS
+.DS_Store
+
+# Editor
+*.swp
+*~
+
+.scratch
+docs
+
+# Claude Code (local)
+.claude/
+CLAUDE.md
