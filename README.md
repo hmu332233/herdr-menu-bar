@@ -4,6 +4,9 @@ macOS 메뉴바에 상주하며 [herdr](https://herdr.dev)의 AI 코딩 에이�
 
 Swift + AppKit 기반. Dock 아이콘 없이 메뉴바에만 상주한다.
 
+<img src="demo.png" alt="demo" width="280">
+
+
 ## 동작
 
 - **메뉴바 아이콘** — 주의가 필요한 상태를 우선순위로 표시한다. blocked가 있으면 ⚠(빨강), 작업 중이면 ▶, 다 끝났으면 ✓, 전부 쉬면 ○. 0인 상태는 숨겨 폭을 아낀다.
