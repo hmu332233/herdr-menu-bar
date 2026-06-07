@@ -25,3 +25,5 @@ docs
 # Claude Code (local)
 .claude/
 CLAUDE.md
+AGENTS.md
+.agents/
