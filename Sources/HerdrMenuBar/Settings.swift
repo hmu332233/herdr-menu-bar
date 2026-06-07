@@ -4,6 +4,7 @@ import HerdrCore
 /// UserDefaults에 영속되는 앱 설정.
 enum Settings {
     private static let clickActionKey = "clickAction"
+    private static let menuBarDisplayModeKey = "menuBarDisplayMode"
 
     /// 에이전트 클릭 동작. 기본 `.none`(보기전용).
     static var clickAction: ClickAction {
@@ -16,6 +17,20 @@ enum Settings {
         }
         set {
             UserDefaults.standard.set(newValue.rawValue, forKey: clickActionKey)
+        }
+    }
+
+    /// 메뉴바 표시 방식. 기본 `.summaryBadge`(기존 동작).
+    static var menuBarDisplayMode: MenuBarDisplayMode {
+        get {
+            guard let raw = UserDefaults.standard.string(forKey: menuBarDisplayModeKey),
+                  let mode = MenuBarDisplayMode(rawValue: raw) else {
+                return .summaryBadge
+            }
+            return mode
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: menuBarDisplayModeKey)
         }
     }
 }

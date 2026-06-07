@@ -56,7 +56,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         guard let button = statusItem.button else { return }
         switch state {
         case .connected(let agents):
-            MenuBarStyle.applyIcon(to: button, counts: StatusCounts(agents))
+            switch Settings.menuBarDisplayMode {
+            case .summaryBadge:
+                MenuBarStyle.applyIcon(to: button, counts: StatusCounts(agents))
+            case .character:
+                MenuBarStyle.applyCharacters(to: button, agents: agents)
+            }
         case .disconnected:
             MenuBarStyle.applyDisconnected(to: button)
         }
@@ -90,12 +95,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         menu.addItem(.separator())
+        menu.addItem(menuBarDisplaySubmenuItem())
         menu.addItem(clickActionSubmenuItem())
         menu.addItem(
             withTitle: "종료",
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )
+    }
+
+    /// "메뉴바 표시" 서브메뉴 — 현재 모드에 체크마크.
+    private func menuBarDisplaySubmenuItem() -> NSMenuItem {
+        let parent = NSMenuItem(title: "메뉴바 표시", action: nil, keyEquivalent: "")
+        let submenu = NSMenu()
+        let current = Settings.menuBarDisplayMode
+        for mode in MenuBarDisplayMode.allCases {
+            let item = NSMenuItem(
+                title: mode.label,
+                action: #selector(selectMenuBarDisplayMode(_:)),
+                keyEquivalent: ""
+            )
+            item.target = self
+            item.representedObject = mode.rawValue
+            item.state = (mode == current) ? .on : .off
+            submenu.addItem(item)
+        }
+        parent.submenu = submenu
+        return parent
     }
 
     /// "클릭 동작" 서브메뉴 — 현재 모드에 체크마크.
@@ -116,6 +142,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         parent.submenu = submenu
         return parent
+    }
+
+    @objc private func selectMenuBarDisplayMode(_ sender: NSMenuItem) {
+        guard let raw = sender.representedObject as? String,
+              let mode = MenuBarDisplayMode(rawValue: raw) else { return }
+        Settings.menuBarDisplayMode = mode
+        poll()   // 메뉴바 표시 + 체크마크 즉시 갱신
     }
 
     @objc private func selectClickAction(_ sender: NSMenuItem) {

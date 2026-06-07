@@ -81,6 +81,42 @@ final class DashboardTests: XCTestCase {
         XCTAssertEqual(DashboardRender.statusWord(.blocked), "막힘")
     }
 
+    func testCharacterSymbols() {
+        XCTAssertEqual(DashboardRender.characterSymbol(.idle), "😴")
+        XCTAssertEqual(DashboardRender.characterSymbol(.working), "🔨")
+        XCTAssertEqual(DashboardRender.characterSymbol(.blocked), "😵")
+        XCTAssertEqual(DashboardRender.characterSymbol(.done), "✨")
+        XCTAssertEqual(DashboardRender.characterSymbol(.unknown), "❔")
+    }
+
+    func testCharacterImageLookupPriorityAndBasenames() {
+        XCTAssertEqual(DashboardRender.characterImageExtensions, ["png", "webp"])
+        XCTAssertEqual(DashboardRender.characterAssetBasename(.idle), "idle")
+        XCTAssertEqual(DashboardRender.characterAssetBasename(.working), "working")
+        XCTAssertEqual(DashboardRender.characterAssetBasename(.blocked), "blocked")
+        XCTAssertEqual(DashboardRender.characterAssetBasename(.done), "done")
+        XCTAssertEqual(DashboardRender.characterAssetBasename(.unknown), "unknown")
+    }
+
+    func testCharacterLinePreservesAgentListOrder() throws {
+        let agents = try fixture("agent_list_mixed_status")
+
+        XCTAssertEqual(DashboardRender.characterLine(agents), "😴 🔨 😵 ✨ ❔")
+    }
+
+    func testCharacterLineLimitsVisibleAgentsAndShowsHiddenCountOnly() throws {
+        let agents = try fixture("agent_list_mixed_status")
+        let sixAgents = agents + [agents[0]]
+
+        XCTAssertEqual(DashboardRender.characterLine(sixAgents), "😴 🔨 😵 ✨ ❔ +1")
+    }
+
+    func testCharacterLineSeparatesWorkspaceGroups() throws {
+        let agents = try fixture("agent_list_multi_workspace")
+
+        XCTAssertEqual(DashboardRender.characterLine(agents), "😴 😴   🔨   😴 😴")
+    }
+
     func testStatusColorMapping() {
         XCTAssertEqual(StatusColor(.working), .working)
         XCTAssertEqual(StatusColor(.blocked), .blocked)

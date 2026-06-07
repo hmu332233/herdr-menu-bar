@@ -8,11 +8,17 @@ enum MenuBarStyle {
     // MARK: - 상태 색상
 
     static func color(_ status: AgentStatus) -> NSColor {
-        switch StatusColor(status) {
-        case .working: return .systemGreen
-        case .blocked: return .systemRed
-        case .done: return .systemBlue
-        case .idle, .unknown: return .secondaryLabelColor
+        switch status {
+        case .idle:
+            return .secondaryLabelColor
+        case .working:
+            return .white
+        case .blocked:
+            return .systemRed
+        case .done:
+            return NSColor(calibratedRed: 0.65, green: 1.0, blue: 0.35, alpha: 1)
+        case .unknown:
+            return .tertiaryLabelColor
         }
     }
 
@@ -29,7 +35,7 @@ enum MenuBarStyle {
         let line = NSMutableAttributedString()
         for (i, badge) in badges.enumerated() {
             if i > 0 { line.append(NSAttributedString(string: "  ")) }
-            let tint = color(badge.status)
+            let tint = menuBarTint(badge.status)
             line.append(symbolGlyph(for: badge.status, tint: tint))
             line.append(NSAttributedString(
                 string: " \(badge.count)",
@@ -37,6 +43,133 @@ enum MenuBarStyle {
             ))
         }
         button.attributedTitle = line
+    }
+
+    /// 캐릭터 모드: 에이전트 순서대로 상태 이모지 fallback을 표시한다.
+    static func applyCharacters(to button: NSStatusBarButton, agents: [Agent]) {
+        button.image = nil
+        button.imagePosition = .noImage
+        button.appearsDisabled = false
+        button.attributedTitle = characterLine(agents)
+    }
+
+    private static func characterLine(_ agents: [Agent]) -> NSAttributedString {
+        let line = NSMutableAttributedString()
+        var remaining = DashboardRender.maxVisibleCharacters
+        var appendedGroup = false
+        for group in AgentGrouping.byWorkspace(agents) {
+            guard remaining > 0 else { break }
+            let visibleAgents = Array(group.agents.prefix(remaining))
+            guard !visibleAgents.isEmpty else { continue }
+
+            if appendedGroup {
+                line.append(characterSeparator(DashboardRender.characterWorkspaceSeparator))
+            }
+
+            for (index, agent) in visibleAgents.enumerated() {
+                if index > 0 {
+                    line.append(characterSeparator(DashboardRender.characterAgentSeparator))
+                }
+                line.append(characterGlyph(for: agent.agentStatus))
+            }
+
+            appendedGroup = true
+            remaining -= visibleAgents.count
+        }
+
+        let hiddenCount = max(0, agents.count - DashboardRender.maxVisibleCharacters)
+        if hiddenCount > 0 {
+            line.append(NSAttributedString(
+                string: " +\(hiddenCount)",
+                attributes: [.font: NSFont.menuBarFont(ofSize: 0)]
+            ))
+        }
+        return line
+    }
+
+    private static func characterSeparator(_ value: String) -> NSAttributedString {
+        NSAttributedString(
+            string: value,
+            attributes: [.font: NSFont.menuBarFont(ofSize: 0)]
+        )
+    }
+
+    private static func characterGlyph(for status: AgentStatus) -> NSAttributedString {
+        let tint = menuBarTint(status)
+        if let image = characterImage(for: status) {
+            return imageGlyph(image, tint: tint)
+        }
+        return NSAttributedString(
+            string: DashboardRender.characterSymbol(status),
+            attributes: [.font: NSFont.menuBarFont(ofSize: 0), .foregroundColor: tint]
+        )
+    }
+
+    private static func menuBarTint(_ status: AgentStatus) -> NSColor {
+        switch status {
+        case .idle, .unknown:
+            return .systemGray
+        case .working:
+            return .white
+        case .blocked:
+            return .systemRed
+        case .done:
+            return NSColor(calibratedRed: 0.65, green: 1.0, blue: 0.35, alpha: 1)
+        }
+    }
+
+    private static func characterImage(for status: AgentStatus) -> NSImage? {
+        for ext in DashboardRender.characterImageExtensions {
+            guard let url = Bundle.module.url(
+                forResource: "image",
+                withExtension: ext,
+                subdirectory: "Resources/Characters"
+            ) else {
+                continue
+            }
+            if let image = NSImage(contentsOf: url) {
+                image.isTemplate = true
+                return image
+            }
+        }
+        return nil
+    }
+
+    private static func imageGlyph(_ image: NSImage, tint: NSColor) -> NSAttributedString {
+        let attachment = NSTextAttachment()
+        attachment.image = tintedImage(image, color: tint)
+        attachment.bounds = aspectFitBounds(for: image.size, boxSize: 18)
+        let glyph = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
+        glyph.addAttribute(.foregroundColor, value: tint, range: NSRange(location: 0, length: glyph.length))
+        return glyph
+    }
+
+    private static func tintedImage(_ image: NSImage, color: NSColor) -> NSImage {
+        let tinted = NSImage(size: image.size)
+        tinted.lockFocus()
+        defer { tinted.unlockFocus() }
+
+        let rect = NSRect(origin: .zero, size: image.size)
+        color.setFill()
+        rect.fill()
+        image.draw(in: rect, from: .zero, operation: .destinationIn, fraction: 1)
+        return tinted
+    }
+
+    private static func aspectFitBounds(for imageSize: NSSize, boxSize: CGFloat) -> CGRect {
+        guard imageSize.width > 0, imageSize.height > 0 else {
+            return CGRect(x: 0, y: 0, width: boxSize, height: boxSize)
+        }
+
+        let scale = min(boxSize / imageSize.width, boxSize / imageSize.height)
+        let width = imageSize.width * scale
+        let height = imageSize.height * scale
+        return CGRect(
+            x: (boxSize - width) / 2,
+            y: (NSFont.menuBarFont(ofSize: 0).capHeight - height) / 2,
+            width: width,
+            height: height
+        )
     }
 
     /// 상태별 SF Symbol 이름.
