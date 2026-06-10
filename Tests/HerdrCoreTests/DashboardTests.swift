@@ -69,16 +69,20 @@ final class DashboardTests: XCTestCase {
     func testSummaryLine() throws {
         let counts = try StatusCounts(fixture("agent_list_mixed_status"))
         // idle1 working1 blocked1 done1 unknown1 → 총 5
-        XCTAssertEqual(DashboardRender.summaryLine(counts), "에이전트 5 · 작업 1 막힘 1 완료 1 대기 1")
+        XCTAssertEqual(DashboardRender.summaryLine(counts, language: .ko), "에이전트 5 · 작업 1 막힘 1 완료 1 대기 1")
+        XCTAssertEqual(DashboardRender.summaryLine(counts, language: .en), "5 agents · working 1 blocked 1 done 1 idle 1")
     }
 
     func testSummaryLineEmpty() {
-        XCTAssertEqual(DashboardRender.summaryLine(StatusCounts([])), "에이전트 0")
+        XCTAssertEqual(DashboardRender.summaryLine(StatusCounts([]), language: .ko), "에이전트 0")
+        XCTAssertEqual(DashboardRender.summaryLine(StatusCounts([]), language: .en), "0 agents")
     }
 
     func testStatusWord() {
-        XCTAssertEqual(DashboardRender.statusWord(.working), "작업 중")
-        XCTAssertEqual(DashboardRender.statusWord(.blocked), "막힘")
+        XCTAssertEqual(DashboardRender.statusWord(.working, language: .ko), "작업 중")
+        XCTAssertEqual(DashboardRender.statusWord(.blocked, language: .ko), "막힘")
+        XCTAssertEqual(DashboardRender.statusWord(.working, language: .en), "working")
+        XCTAssertEqual(DashboardRender.statusWord(.blocked, language: .en), "blocked")
     }
 
     func testCharacterSymbols() {

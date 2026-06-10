@@ -73,9 +73,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         switch state {
         case .disconnected:
-            menu.addItem(withTitle: DashboardRender.disconnectedMessage, action: nil, keyEquivalent: "")
+            menu.addItem(withTitle: DashboardRender.disconnectedMessage(), action: nil, keyEquivalent: "")
         case .connected(let agents) where agents.isEmpty:
-            menu.addItem(withTitle: "에이전트 없음", action: nil, keyEquivalent: "")
+            menu.addItem(withTitle: MenuText.noAgents, action: nil, keyEquivalent: "")
         case .connected(let agents):
             // 클릭 동작이 .none이면 항목은 비클릭(보기전용).
             let clickable = Settings.clickAction != .none
@@ -98,7 +98,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(menuBarDisplaySubmenuItem())
         menu.addItem(clickActionSubmenuItem())
         menu.addItem(
-            withTitle: "종료",
+            withTitle: MenuText.quit,
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )
@@ -106,7 +106,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     /// "메뉴바 표시" 서브메뉴 — 현재 모드에 체크마크.
     private func menuBarDisplaySubmenuItem() -> NSMenuItem {
-        let parent = NSMenuItem(title: "메뉴바 표시", action: nil, keyEquivalent: "")
+        let parent = NSMenuItem(title: MenuText.menuBarDisplay, action: nil, keyEquivalent: "")
         let submenu = NSMenu()
         let current = Settings.menuBarDisplayMode
         for mode in MenuBarDisplayMode.allCases {
@@ -126,7 +126,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     /// "클릭 동작" 서브메뉴 — 현재 모드에 체크마크.
     private func clickActionSubmenuItem() -> NSMenuItem {
-        let parent = NSMenuItem(title: "클릭 동작", action: nil, keyEquivalent: "")
+        let parent = NSMenuItem(title: MenuText.clickAction, action: nil, keyEquivalent: "")
         let submenu = NSMenu()
         let current = Settings.clickAction
         for mode in ClickAction.allCases {

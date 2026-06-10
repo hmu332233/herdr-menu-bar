@@ -11,8 +11,8 @@ public enum ClickAction: String, CaseIterable, Sendable {
     /// 메뉴에 표시할 사람용 라벨.
     public var label: String {
         switch self {
-        case .none: return "이동 안 함"
-        case .kaku: return "kaku로 이동"
+        case .none: return UILanguage.current == .ko ? "이동 안 함" : "No action"
+        case .kaku: return UILanguage.current == .ko ? "kaku로 이동" : "Focus in kaku"
         }
     }
 }

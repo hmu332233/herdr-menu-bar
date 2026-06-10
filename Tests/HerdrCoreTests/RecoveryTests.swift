@@ -29,6 +29,7 @@ final class RecoveryTests: XCTestCase {
 
     func testDisconnectedIconAndMessage() {
         XCTAssertEqual(DashboardRender.disconnectedIcon, "—")
-        XCTAssertEqual(DashboardRender.disconnectedMessage, "herdr 연결 안 됨")
+        XCTAssertEqual(DashboardRender.disconnectedMessage(language: .ko), "herdr 연결 안 됨")
+        XCTAssertEqual(DashboardRender.disconnectedMessage(language: .en), "herdr disconnected")
     }
 }

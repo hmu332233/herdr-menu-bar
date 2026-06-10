@@ -59,7 +59,9 @@ public enum DashboardRender {
     /// herdr 연결 안 됨일 때 메뉴바 아이콘.
     public static let disconnectedIcon = "—"
     /// herdr 연결 안 됨일 때 드롭다운 안내.
-    public static let disconnectedMessage = "herdr 연결 안 됨"
+    public static func disconnectedMessage(language: UILanguage = .current) -> String {
+        language == .ko ? "herdr 연결 안 됨" : "herdr disconnected"
+    }
     /// 캐릭터 모드에서 메뉴바에 직접 표시할 최대 에이전트 수.
     public static let maxVisibleCharacters = 5
     /// 캐릭터 모드에서 같은 workspace 안의 에이전트 사이 간격.
@@ -142,26 +144,26 @@ public enum DashboardRender {
     }
 
     /// 사람이 읽는 상태 단어 (드롭다운 줄 뒤에 흐리게 표시).
-    public static func statusWord(_ status: AgentStatus) -> String {
+    public static func statusWord(_ status: AgentStatus, language: UILanguage = .current) -> String {
         switch status {
-        case .idle: return "대기"
-        case .working: return "작업 중"
-        case .blocked: return "막힘"
-        case .done: return "완료"
-        case .unknown: return "알 수 없음"
+        case .idle: return language == .ko ? "대기" : "idle"
+        case .working: return language == .ko ? "작업 중" : "working"
+        case .blocked: return language == .ko ? "막힘" : "blocked"
+        case .done: return language == .ko ? "완료" : "done"
+        case .unknown: return language == .ko ? "알 수 없음" : "unknown"
         }
     }
 
     /// 상단 요약 줄: `<총> agents` + 0 아닌 상태 요약.
-    public static func summaryLine(_ counts: StatusCounts) -> String {
+    public static func summaryLine(_ counts: StatusCounts, language: UILanguage = .current) -> String {
         let total = counts.idle + counts.working + counts.blocked + counts.done + counts.unknown
         var parts: [String] = []
-        if counts.working > 0 { parts.append("작업 \(counts.working)") }
-        if counts.blocked > 0 { parts.append("막힘 \(counts.blocked)") }
-        if counts.done > 0 { parts.append("완료 \(counts.done)") }
-        if counts.idle > 0 { parts.append("대기 \(counts.idle)") }
+        if counts.working > 0 { parts.append((language == .ko ? "작업" : "working") + " \(counts.working)") }
+        if counts.blocked > 0 { parts.append((language == .ko ? "막힘" : "blocked") + " \(counts.blocked)") }
+        if counts.done > 0 { parts.append((language == .ko ? "완료" : "done") + " \(counts.done)") }
+        if counts.idle > 0 { parts.append((language == .ko ? "대기" : "idle") + " \(counts.idle)") }
         let suffix = parts.isEmpty ? "" : " · " + parts.joined(separator: " ")
-        return "에이전트 \(total)\(suffix)"
+        return language == .ko ? "에이전트 \(total)\(suffix)" : "\(total) agents\(suffix)"
     }
 }
 

@@ -10,8 +10,8 @@ public enum MenuBarDisplayMode: String, CaseIterable, Sendable {
     /// 메뉴에 표시할 사람용 라벨.
     public var label: String {
         switch self {
-        case .summaryBadge: return "요약 배지"
-        case .character: return "캐릭터"
+        case .summaryBadge: return UILanguage.current == .ko ? "요약 배지" : "Summary badge"
+        case .character: return UILanguage.current == .ko ? "캐릭터" : "Character"
         }
     }
 }
