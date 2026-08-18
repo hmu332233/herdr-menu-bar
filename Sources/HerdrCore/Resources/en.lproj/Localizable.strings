@@ -1,0 +1,27 @@
+/* Menu structure */
+"menu.noAgents"           = "No agents";
+"menu.quit"               = "Quit";
+"menu.display"            = "Menu bar display";
+"menu.clickAction"        = "Click action";
+
+/* Menu bar display modes */
+"display.summaryBadge"    = "Summary badge";
+"display.character"       = "Character";
+
+/* Click actions */
+"click.none"              = "Do nothing";
+"click.kaku"              = "Focus in kaku";
+
+/* Agent status words */
+"status.idle"             = "Idle";
+"status.working"          = "Working";
+"status.blocked"          = "Blocked";
+"status.done"             = "Done";
+"status.unknown"          = "Unknown";
+
+/* Dropdown summary. "dashboard.agents" lives in Localizable.stringsdict (plural). */
+"dashboard.disconnected"  = "herdr not connected";
+"dashboard.count.working" = "%d working";
+"dashboard.count.blocked" = "%d blocked";
+"dashboard.count.done"    = "%d done";
+"dashboard.count.idle"    = "%d idle";

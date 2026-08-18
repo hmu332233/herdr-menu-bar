@@ -35,12 +35,29 @@ scripts/build-app.sh     # produce dist/herdr-menu-bar.app
 
 ## Configuration
 
-Click behavior is set in the **클릭 동작** (Click action) dropdown submenu — `이동 안 함` (do nothing) or `kaku로 이동` (focus in kaku). Settings persist in `UserDefaults`.
+Click behavior is set in the **Click action** dropdown submenu — `Do nothing` or `Focus in kaku`. Settings persist in `UserDefaults`.
+
+## Localization
+
+The UI ships in **English** (default) and **Korean**, and follows your macOS system language. Unsupported languages fall back to English.
+
+All user-facing strings live in `Sources/HerdrCore/Resources/<language>.lproj/`. Adding a language needs no Swift changes:
+
+```bash
+cp -R Sources/HerdrCore/Resources/en.lproj Sources/HerdrCore/Resources/ja.lproj
+# translate the values in ja.lproj/Localizable.strings and Localizable.stringsdict
+swift test   # verifies your new file covers every key
+```
+
+Then add the language code to `translatedLanguages` in `Tests/HerdrCoreTests/LocalizationTests.swift`. The test suite fails on a missing key, an empty value, or a dropped `%d` placeholder, so an incomplete translation cannot ship silently.
+
+Plural rules live in `Localizable.stringsdict` — English distinguishes `1 agent` from `2 agents`, Korean uses one form. Languages with more plural categories (Russian, Arabic, Polish) can declare `few`, `many`, and `zero` there.
 
 ## Layout
 
 ```
 Sources/HerdrCore/      platform-neutral logic (CLI, decoding, aggregation)
+Sources/HerdrCore/Resources/<lang>.lproj/   translations (strings + plurals)
 Sources/HerdrMenuBar/   AppKit UI (NSStatusItem, menu, settings)
 Tests/HerdrCoreTests/   unit tests + fixtures
 ```

@@ -59,7 +59,8 @@ public enum DashboardRender {
     /// herdr 연결 안 됨일 때 메뉴바 아이콘.
     public static let disconnectedIcon = "—"
     /// herdr 연결 안 됨일 때 드롭다운 안내.
-    public static let disconnectedMessage = "herdr 연결 안 됨"
+    /// 표시 언어에 따라 달라지므로 호출 시점에 조회한다.
+    public static var disconnectedMessage: String { L10n.Dashboard.disconnected }
     /// 캐릭터 모드에서 메뉴바에 직접 표시할 최대 에이전트 수.
     public static let maxVisibleCharacters = 5
     /// 캐릭터 모드에서 같은 workspace 안의 에이전트 사이 간격.
@@ -144,11 +145,11 @@ public enum DashboardRender {
     /// 사람이 읽는 상태 단어 (드롭다운 줄 뒤에 흐리게 표시).
     public static func statusWord(_ status: AgentStatus) -> String {
         switch status {
-        case .idle: return "대기"
-        case .working: return "작업 중"
-        case .blocked: return "막힘"
-        case .done: return "완료"
-        case .unknown: return "알 수 없음"
+        case .idle: return L10n.Status.idle
+        case .working: return L10n.Status.working
+        case .blocked: return L10n.Status.blocked
+        case .done: return L10n.Status.done
+        case .unknown: return L10n.Status.unknown
         }
     }
 
@@ -156,12 +157,12 @@ public enum DashboardRender {
     public static func summaryLine(_ counts: StatusCounts) -> String {
         let total = counts.idle + counts.working + counts.blocked + counts.done + counts.unknown
         var parts: [String] = []
-        if counts.working > 0 { parts.append("작업 \(counts.working)") }
-        if counts.blocked > 0 { parts.append("막힘 \(counts.blocked)") }
-        if counts.done > 0 { parts.append("완료 \(counts.done)") }
-        if counts.idle > 0 { parts.append("대기 \(counts.idle)") }
+        if counts.working > 0 { parts.append(L10n.Dashboard.working(counts.working)) }
+        if counts.blocked > 0 { parts.append(L10n.Dashboard.blocked(counts.blocked)) }
+        if counts.done > 0 { parts.append(L10n.Dashboard.done(counts.done)) }
+        if counts.idle > 0 { parts.append(L10n.Dashboard.idle(counts.idle)) }
         let suffix = parts.isEmpty ? "" : " · " + parts.joined(separator: " ")
-        return "에이전트 \(total)\(suffix)"
+        return L10n.Dashboard.agents(total) + suffix
     }
 }
 

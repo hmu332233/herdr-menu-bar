@@ -3,13 +3,17 @@ import PackageDescription
 
 let package = Package(
     name: "HerdrMenuBar",
+    defaultLocalization: "en",
     platforms: [
         .macOS(.v13)
     ],
     targets: [
         .target(
             name: "HerdrCore",
-            path: "Sources/HerdrCore"
+            path: "Sources/HerdrCore",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .executableTarget(
             name: "HerdrMenuBar",

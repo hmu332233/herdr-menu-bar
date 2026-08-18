@@ -29,6 +29,7 @@ final class RecoveryTests: XCTestCase {
 
     func testDisconnectedIconAndMessage() {
         XCTAssertEqual(DashboardRender.disconnectedIcon, "—")
-        XCTAssertEqual(DashboardRender.disconnectedMessage, "herdr 연결 안 됨")
+        // 정확한 문구는 언어별이라 LocalizationTests가 본다 — 여기선 비어 있지 않기만.
+        XCTAssertFalse(DashboardRender.disconnectedMessage.isEmpty)
     }
 }
