@@ -1,0 +1,27 @@
+/* 메뉴 구조 */
+"menu.noAgents"           = "에이전트 없음";
+"menu.quit"               = "종료";
+"menu.display"            = "메뉴바 표시";
+"menu.clickAction"        = "클릭 동작";
+
+/* 메뉴바 표시 방식 */
+"display.summaryBadge"    = "요약 배지";
+"display.character"       = "캐릭터";
+
+/* 클릭 동작 */
+"click.none"              = "이동 안 함";
+"click.kaku"              = "kaku로 이동";
+
+/* 에이전트 상태 */
+"status.idle"             = "대기";
+"status.working"          = "작업 중";
+"status.blocked"          = "막힘";
+"status.done"             = "완료";
+"status.unknown"          = "알 수 없음";
+
+/* 드롭다운 요약. "dashboard.agents"는 Localizable.stringsdict에 있다. */
+"dashboard.disconnected"  = "herdr 연결 안 됨";
+"dashboard.count.working" = "작업 %d";
+"dashboard.count.blocked" = "막힘 %d";
+"dashboard.count.done"    = "완료 %d";
+"dashboard.count.idle"    = "대기 %d";

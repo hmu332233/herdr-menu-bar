@@ -69,16 +69,27 @@ final class DashboardTests: XCTestCase {
     func testSummaryLine() throws {
         let counts = try StatusCounts(fixture("agent_list_mixed_status"))
         // idle1 working1 blocked1 done1 unknown1 → 총 5
-        XCTAssertEqual(DashboardRender.summaryLine(counts), "에이전트 5 · 작업 1 막힘 1 완료 1 대기 1")
+        // 문구는 언어별로 달라지므로, 조립 순서와 구분자만 검증한다.
+        let expected = L10n.Dashboard.agents(5) + " · " + [
+            L10n.Dashboard.working(1),
+            L10n.Dashboard.blocked(1),
+            L10n.Dashboard.done(1),
+            L10n.Dashboard.idle(1),
+        ].joined(separator: " ")
+        XCTAssertEqual(DashboardRender.summaryLine(counts), expected)
     }
 
     func testSummaryLineEmpty() {
-        XCTAssertEqual(DashboardRender.summaryLine(StatusCounts([])), "에이전트 0")
+        // 0개면 상태 요약 접미사 없이 총계만 나온다.
+        XCTAssertEqual(DashboardRender.summaryLine(StatusCounts([])), L10n.Dashboard.agents(0))
     }
 
     func testStatusWord() {
-        XCTAssertEqual(DashboardRender.statusWord(.working), "작업 중")
-        XCTAssertEqual(DashboardRender.statusWord(.blocked), "막힘")
+        // 상태마다 서로 다른, 비어 있지 않은 단어가 나와야 한다.
+        let words = [AgentStatus.idle, .working, .blocked, .done, .unknown]
+            .map(DashboardRender.statusWord)
+        XCTAssertFalse(words.contains(where: \.isEmpty))
+        XCTAssertEqual(Set(words).count, words.count, "상태 단어가 중복된다")
     }
 
     func testCharacterSymbols() {

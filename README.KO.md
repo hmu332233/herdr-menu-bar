@@ -37,10 +37,27 @@ scripts/build-app.sh     # dist/herdr-menu-bar.app 생성
 
 클릭 동작은 드롭다운의 **클릭 동작** 서브메뉴에서 고를 수 있습니다(`이동 안 함` / `kaku로 이동`). 설정은 `UserDefaults`에 저장됩니다.
 
+## 다국어 지원
+
+UI는 **영어**(기본)와 **한국어**로 제공되며, macOS 시스템 언어를 따릅니다. 번역이 없는 언어는 영어로 표시됩니다.
+
+사용자에게 보이는 모든 문자열은 `Sources/HerdrCore/Resources/<언어>.lproj/`에 있습니다. 언어를 추가할 때 Swift 코드는 건드리지 않아도 됩니다.
+
+```bash
+cp -R Sources/HerdrCore/Resources/en.lproj Sources/HerdrCore/Resources/ja.lproj
+# ja.lproj/Localizable.strings와 Localizable.stringsdict의 값을 번역
+swift test   # 키가 빠지지 않았는지 검사
+```
+
+그다음 `Tests/HerdrCoreTests/LocalizationTests.swift`의 `translatedLanguages`에 언어 코드를 추가하세요. 키 누락, 빈 값, `%d` 누락은 테스트가 잡아내므로 번역이 덜 된 채로 배포될 일은 없습니다.
+
+복수형 규칙은 `Localizable.stringsdict`에 있습니다. 영어는 `1 agent`와 `2 agents`를 구분하고 한국어는 한 형태만 씁니다. 러시아어·아랍어·폴란드어처럼 복수 범주가 많은 언어는 `few`, `many`, `zero`를 선언할 수 있습니다.
+
 ## 구조
 
 ```
 Sources/HerdrCore/      플랫폼 중립 로직 (CLI, 디코딩, 집계)
+Sources/HerdrCore/Resources/<언어>.lproj/   번역 (문자열 + 복수형)
 Sources/HerdrMenuBar/   AppKit UI (NSStatusItem, 메뉴, 설정)
 Tests/HerdrCoreTests/   단위 테스트 + 픽스처
 ```
