@@ -13,14 +13,7 @@ public enum L10n {
     public enum Menu {
         public static var noAgents: String { t("menu.noAgents") }
         public static var quit: String { t("menu.quit") }
-        public static var display: String { t("menu.display") }
         public static var clickAction: String { t("menu.clickAction") }
-    }
-
-    /// 메뉴바 표시 방식 라벨.
-    public enum Display {
-        public static var summaryBadge: String { t("display.summaryBadge") }
-        public static var character: String { t("display.character") }
     }
 
     /// 클릭 동작 라벨.

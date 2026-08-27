@@ -61,15 +61,6 @@ public enum DashboardRender {
     /// herdr 연결 안 됨일 때 드롭다운 안내.
     /// 표시 언어에 따라 달라지므로 호출 시점에 조회한다.
     public static var disconnectedMessage: String { L10n.Dashboard.disconnected }
-    /// 캐릭터 모드에서 메뉴바에 직접 표시할 최대 에이전트 수.
-    public static let maxVisibleCharacters = 5
-    /// 캐릭터 모드에서 같은 workspace 안의 에이전트 사이 간격.
-    public static let characterAgentSeparator = " "
-    /// 캐릭터 모드에서 workspace 그룹 사이 간격.
-    public static let characterWorkspaceSeparator = "   "
-    /// 상태 이미지 검색 우선순위.
-    public static let characterImageExtensions = ["png", "webp"]
-
     /// 메뉴바에 표시할 배지 하나: 상태 + 카운트.
     public struct Badge: Equatable, Sendable {
         public let status: AgentStatus
@@ -106,40 +97,6 @@ public enum DashboardRender {
         case .done: return "✓"
         case .unknown: return "?"
         }
-    }
-
-    public static func characterSymbol(_ status: AgentStatus) -> String {
-        switch status {
-        case .idle: return "😴"
-        case .working: return "🔨"
-        case .blocked: return "😵"
-        case .done: return "✨"
-        case .unknown: return "❔"
-        }
-    }
-
-    public static func characterAssetBasename(_ status: AgentStatus) -> String {
-        status.rawValue
-    }
-
-    public static func characterLine(_ agents: [Agent]) -> String {
-        var remaining = maxVisibleCharacters
-        var groupLines: [String] = []
-        for group in AgentGrouping.byWorkspace(agents) {
-            guard remaining > 0 else { break }
-            let visibleAgents = Array(group.agents.prefix(remaining))
-            guard !visibleAgents.isEmpty else { continue }
-            groupLines.append(
-                visibleAgents
-                    .map { characterSymbol($0.agentStatus) }
-                    .joined(separator: characterAgentSeparator)
-            )
-            remaining -= visibleAgents.count
-        }
-        let visible = groupLines.joined(separator: characterWorkspaceSeparator)
-        let hiddenCount = max(0, agents.count - maxVisibleCharacters)
-        guard hiddenCount > 0 else { return visible }
-        return "\(visible) +\(hiddenCount)"
     }
 
     /// 사람이 읽는 상태 단어 (드롭다운 줄 뒤에 흐리게 표시).

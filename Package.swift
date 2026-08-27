@@ -18,10 +18,7 @@ let package = Package(
         .executableTarget(
             name: "HerdrMenuBar",
             dependencies: ["HerdrCore"],
-            path: "Sources/HerdrMenuBar",
-            resources: [
-                .copy("Resources")
-            ]
+            path: "Sources/HerdrMenuBar"
         ),
         .testTarget(
             name: "HerdrCoreTests",

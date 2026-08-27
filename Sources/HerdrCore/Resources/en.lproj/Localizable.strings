@@ -1,12 +1,7 @@
 /* Menu structure */
 "menu.noAgents"           = "No agents";
 "menu.quit"               = "Quit";
-"menu.display"            = "Menu bar display";
 "menu.clickAction"        = "Click action";
-
-/* Menu bar display modes */
-"display.summaryBadge"    = "Summary badge";
-"display.character"       = "Character";
 
 /* Click actions */
 "click.none"              = "Do nothing";

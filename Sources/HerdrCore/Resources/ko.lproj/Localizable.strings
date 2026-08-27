@@ -1,12 +1,7 @@
 /* 메뉴 구조 */
 "menu.noAgents"           = "에이전트 없음";
 "menu.quit"               = "종료";
-"menu.display"            = "메뉴바 표시";
 "menu.clickAction"        = "클릭 동작";
-
-/* 메뉴바 표시 방식 */
-"display.summaryBadge"    = "요약 배지";
-"display.character"       = "캐릭터";
 
 /* 클릭 동작 */
 "click.none"              = "이동 안 함";

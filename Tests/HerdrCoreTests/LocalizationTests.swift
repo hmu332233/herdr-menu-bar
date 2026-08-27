@@ -19,10 +19,7 @@ final class LocalizationTests: XCTestCase {
         let en = try bundle("en")
         XCTAssertEqual(en.string("menu.noAgents"), "No agents")
         XCTAssertEqual(en.string("menu.quit"), "Quit")
-        XCTAssertEqual(en.string("menu.display"), "Menu bar display")
         XCTAssertEqual(en.string("menu.clickAction"), "Click action")
-        XCTAssertEqual(en.string("display.summaryBadge"), "Summary badge")
-        XCTAssertEqual(en.string("display.character"), "Character")
         XCTAssertEqual(en.string("click.none"), "Do nothing")
         XCTAssertEqual(en.string("click.kaku"), "Focus in kaku")
         XCTAssertEqual(en.string("status.idle"), "Idle")
@@ -100,10 +97,7 @@ final class LocalizationTests: XCTestCase {
         let rendered: [(key: String, value: String)] = [
             ("menu.noAgents", L10n.Menu.noAgents),
             ("menu.quit", L10n.Menu.quit),
-            ("menu.display", L10n.Menu.display),
             ("menu.clickAction", L10n.Menu.clickAction),
-            ("display.summaryBadge", L10n.Display.summaryBadge),
-            ("display.character", L10n.Display.character),
             ("click.none", L10n.Click.none),
             ("click.kaku", L10n.Click.kaku),
             ("status.idle", L10n.Status.idle),
