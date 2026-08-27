@@ -35,13 +35,15 @@ scripts/build-app.sh     # dist/herdr-menu-bar.app 생성
 
 ## 설정
 
-클릭 동작은 드롭다운의 **클릭 동작** 서브메뉴에서 고를 수 있습니다(`이동 안 함` / `kaku로 이동`). 설정은 `UserDefaults`에 저장됩니다.
+클릭 동작은 드롭다운의 **클릭 동작** 서브메뉴에서 고를 수 있습니다(`이동 안 함` / `kaku로 이동`).
+
+UI 언어는 **언어** 서브메뉴에서 `시스템 설정`, `English`, `한국어` 중 선택합니다. 선택은 즉시 반영되고 명시적인 언어 선택은 `UserDefaults`에 저장됩니다. `시스템 설정`을 선택하면 다시 macOS 설정을 따릅니다.
 
 ## 다국어 지원
 
-UI는 **영어**(기본)와 **한국어**로 제공되며, macOS 시스템 언어를 따릅니다. 번역이 없는 언어는 영어로 표시됩니다.
+UI는 **영어**(기본)와 **한국어**로 제공됩니다. 기본적으로 macOS 시스템 언어를 따르며 앱의 언어 메뉴에서 덮어쓸 수 있습니다. 시스템 언어의 번역이 없으면 영어로 표시됩니다.
 
-사용자에게 보이는 모든 문자열은 `Sources/HerdrCore/Resources/<언어>.lproj/`에 있습니다. 언어를 추가할 때 Swift 코드는 건드리지 않아도 됩니다.
+사용자에게 보이는 모든 문자열은 `Sources/HerdrCore/Resources/<언어>.lproj/`에 있습니다. 언어를 추가하려면:
 
 ```bash
 cp -R Sources/HerdrCore/Resources/en.lproj Sources/HerdrCore/Resources/ja.lproj
@@ -49,7 +51,7 @@ cp -R Sources/HerdrCore/Resources/en.lproj Sources/HerdrCore/Resources/ja.lproj
 swift test   # 키가 빠지지 않았는지 검사
 ```
 
-그다음 `Tests/HerdrCoreTests/LocalizationTests.swift`의 `translatedLanguages`에 언어 코드를 추가하세요. 키 누락, 빈 값, `%d` 누락은 테스트가 잡아내므로 번역이 덜 된 채로 배포될 일은 없습니다.
+그다음 `Sources/HerdrCore/Localization.swift`에 `AppLanguage` case와 메뉴 라벨을 추가하고, `Tests/HerdrCoreTests/LocalizationTests.swift`의 `translatedLanguages`에 언어 코드를 추가하세요. 키 누락, 빈 값, `%d` 누락은 테스트가 잡아내므로 번역이 덜 된 채로 배포될 일은 없습니다.
 
 복수형 규칙은 `Localizable.stringsdict`에 있습니다. 영어는 `1 agent`와 `2 agents`를 구분하고 한국어는 한 형태만 씁니다. 러시아어·아랍어·폴란드어처럼 복수 범주가 많은 언어는 `few`, `many`, `zero`를 선언할 수 있습니다.
 

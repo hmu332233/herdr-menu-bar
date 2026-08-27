@@ -1,7 +1,11 @@
 /* 메뉴 구조 */
 "menu.noAgents"           = "에이전트 없음";
 "menu.quit"               = "종료";
+"menu.language"           = "언어";
 "menu.clickAction"        = "클릭 동작";
+
+/* 언어 선택 */
+"language.system"         = "시스템 설정";
 
 /* 클릭 동작 */
 "click.none"              = "이동 안 함";

@@ -35,13 +35,15 @@ scripts/build-app.sh     # produce dist/herdr-menu-bar.app
 
 ## Configuration
 
-Click behavior is set in the **Click action** dropdown submenu — `Do nothing` or `Focus in kaku`. Settings persist in `UserDefaults`.
+Click behavior is set in the **Click action** dropdown submenu — `Do nothing` or `Focus in kaku`.
+
+UI language is set in the **Language** submenu — `System Default`, `English`, or `한국어`. Changes apply immediately and explicit choices persist in `UserDefaults`; choosing `System Default` returns control to macOS.
 
 ## Localization
 
-The UI ships in **English** (default) and **Korean**, and follows your macOS system language. Unsupported languages fall back to English.
+The UI ships in **English** (default) and **Korean**. It follows your macOS system language by default, and the in-app Language submenu can override it. Unsupported system languages fall back to English.
 
-All user-facing strings live in `Sources/HerdrCore/Resources/<language>.lproj/`. Adding a language needs no Swift changes:
+All user-facing strings live in `Sources/HerdrCore/Resources/<language>.lproj/`. To add a language:
 
 ```bash
 cp -R Sources/HerdrCore/Resources/en.lproj Sources/HerdrCore/Resources/ja.lproj
@@ -49,7 +51,7 @@ cp -R Sources/HerdrCore/Resources/en.lproj Sources/HerdrCore/Resources/ja.lproj
 swift test   # verifies your new file covers every key
 ```
 
-Then add the language code to `translatedLanguages` in `Tests/HerdrCoreTests/LocalizationTests.swift`. The test suite fails on a missing key, an empty value, or a dropped `%d` placeholder, so an incomplete translation cannot ship silently.
+Then add an `AppLanguage` case and menu label in `Sources/HerdrCore/Localization.swift`, and add the language code to `translatedLanguages` in `Tests/HerdrCoreTests/LocalizationTests.swift`. The test suite fails on a missing key, an empty value, or a dropped `%d` placeholder, so an incomplete translation cannot ship silently.
 
 Plural rules live in `Localizable.stringsdict` — English distinguishes `1 agent` from `2 agents`, Korean uses one form. Languages with more plural categories (Russian, Arabic, Polish) can declare `few`, `many`, and `zero` there.
 

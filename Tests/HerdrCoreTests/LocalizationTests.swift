@@ -4,7 +4,7 @@ import XCTest
 /// 번역 리소스 자체를 검증한다.
 ///
 /// 런타임 언어에 좌우되지 않도록 `.lproj` 번들을 직접 열어 조회한다.
-/// 언어를 추가하면 `translatedLanguages`에 한 줄만 더하면 된다 —
+/// 언어를 추가하면 `AppLanguage`와 `translatedLanguages`를 함께 갱신한다.
 /// 키 누락/오타는 `testEveryLanguageCoversEveryKey`가 잡아낸다.
 final class LocalizationTests: XCTestCase {
     /// 저장소에 들어 있는 모든 번역. 새 언어는 여기에 추가한다.
@@ -19,7 +19,9 @@ final class LocalizationTests: XCTestCase {
         let en = try bundle("en")
         XCTAssertEqual(en.string("menu.noAgents"), "No agents")
         XCTAssertEqual(en.string("menu.quit"), "Quit")
+        XCTAssertEqual(en.string("menu.language"), "Language")
         XCTAssertEqual(en.string("menu.clickAction"), "Click action")
+        XCTAssertEqual(en.string("language.system"), "System Default")
         XCTAssertEqual(en.string("click.none"), "Do nothing")
         XCTAssertEqual(en.string("click.kaku"), "Focus in kaku")
         XCTAssertEqual(en.string("status.idle"), "Idle")
@@ -43,6 +45,51 @@ final class LocalizationTests: XCTestCase {
         let ko = try bundle("ko")
         XCTAssertEqual(ko.plural("dashboard.agents", 1), "에이전트 1")
         XCTAssertEqual(ko.plural("dashboard.agents", 5), "에이전트 5")
+    }
+
+    func testAppLanguageCasesLabelsAndRawValues() {
+        XCTAssertEqual(AppLanguage.allCases, [.system, .english, .korean])
+        XCTAssertEqual(AppLanguage.english.rawValue, "en")
+        XCTAssertEqual(AppLanguage.korean.rawValue, "ko")
+        XCTAssertNil(AppLanguage(rawValue: "ja"))
+
+        let labels = AppLanguage.allCases.map(\.label)
+        XCTAssertFalse(labels.contains(where: \.isEmpty))
+        XCTAssertEqual(Set(labels).count, labels.count)
+    }
+
+    func testExplicitLanguageSelectionRoutesStringsAndPlurals() {
+        withRestoredLanguagePreference {
+            XCTAssertEqual(L10n.systemLanguage(for: ["ko-KR"]), .korean)
+            XCTAssertEqual(L10n.systemLanguage(for: ["en-US"]), .english)
+            XCTAssertEqual(L10n.systemLanguage(for: ["fr-FR"]), .english)
+
+            L10n.language = .english
+            XCTAssertEqual(L10n.Menu.quit, "Quit")
+            XCTAssertEqual(L10n.Dashboard.agents(1), "1 agent")
+
+            L10n.language = .korean
+            XCTAssertEqual(L10n.Menu.quit, "종료")
+            XCTAssertEqual(L10n.Dashboard.agents(1), "에이전트 1")
+        }
+    }
+
+    func testLanguagePreferencePersistsAndFallsBackToSystem() {
+        withRestoredLanguagePreference {
+            L10n.language = .korean
+            XCTAssertEqual(L10n.language, .korean)
+            XCTAssertEqual(
+                UserDefaults.standard.string(forKey: L10n.languagePreferenceKey),
+                AppLanguage.korean.rawValue
+            )
+
+            L10n.language = .system
+            XCTAssertEqual(L10n.language, .system)
+            XCTAssertNil(UserDefaults.standard.object(forKey: L10n.languagePreferenceKey))
+
+            UserDefaults.standard.set("unsupported", forKey: L10n.languagePreferenceKey)
+            XCTAssertEqual(L10n.language, .system)
+        }
     }
 
     // MARK: - 언어 간 정합성
@@ -97,7 +144,9 @@ final class LocalizationTests: XCTestCase {
         let rendered: [(key: String, value: String)] = [
             ("menu.noAgents", L10n.Menu.noAgents),
             ("menu.quit", L10n.Menu.quit),
+            ("menu.language", L10n.Menu.language),
             ("menu.clickAction", L10n.Menu.clickAction),
+            ("language.system", L10n.Language.system),
             ("click.none", L10n.Click.none),
             ("click.kaku", L10n.Click.kaku),
             ("status.idle", L10n.Status.idle),
@@ -141,6 +190,19 @@ final class LocalizationTests: XCTestCase {
 
     private func keys(inStringsFileFor language: String) throws -> Set<String> {
         Set(try stringsTable(for: language).keys)
+    }
+
+    private func withRestoredLanguagePreference(_ body: () -> Void) {
+        let defaults = UserDefaults.standard
+        let previous = defaults.object(forKey: L10n.languagePreferenceKey)
+        defer {
+            if let previous {
+                defaults.set(previous, forKey: L10n.languagePreferenceKey)
+            } else {
+                defaults.removeObject(forKey: L10n.languagePreferenceKey)
+            }
+        }
+        body()
     }
 }
 

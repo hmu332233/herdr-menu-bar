@@ -90,12 +90,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         menu.addItem(.separator())
+        menu.addItem(languageSubmenuItem())
         menu.addItem(clickActionSubmenuItem())
         menu.addItem(
             withTitle: L10n.Menu.quit,
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )
+    }
+
+    /// "언어" 서브메뉴 — 선택 즉시 메뉴 전체를 다시 렌더링한다.
+    private func languageSubmenuItem() -> NSMenuItem {
+        let parent = NSMenuItem(title: L10n.Menu.language, action: nil, keyEquivalent: "")
+        let submenu = NSMenu()
+        let current = L10n.language
+        for language in AppLanguage.allCases {
+            let item = NSMenuItem(
+                title: language.label,
+                action: #selector(selectLanguage(_:)),
+                keyEquivalent: ""
+            )
+            item.target = self
+            item.representedObject = language.rawValue
+            item.state = (language == current) ? .on : .off
+            submenu.addItem(item)
+        }
+        parent.submenu = submenu
+        return parent
     }
 
     /// "클릭 동작" 서브메뉴 — 현재 모드에 체크마크.
@@ -116,6 +137,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         parent.submenu = submenu
         return parent
+    }
+
+    @objc private func selectLanguage(_ sender: NSMenuItem) {
+        guard let raw = sender.representedObject as? String,
+              let language = AppLanguage(rawValue: raw) else { return }
+        L10n.language = language
+        poll()
     }
 
     @objc private func selectClickAction(_ sender: NSMenuItem) {

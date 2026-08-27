@@ -1,7 +1,11 @@
 /* Menu structure */
 "menu.noAgents"           = "No agents";
 "menu.quit"               = "Quit";
+"menu.language"           = "Language";
 "menu.clickAction"        = "Click action";
+
+/* Language selection */
+"language.system"         = "System Default";
 
 /* Click actions */
 "click.none"              = "Do nothing";

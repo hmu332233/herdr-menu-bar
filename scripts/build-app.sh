@@ -12,13 +12,16 @@ APP="${OUT_DIR}/${APP_NAME}.app"
 
 echo "▶ Building release binary…"
 swift build -c release --product "${EXECUTABLE}"
-BIN_PATH="$(swift build -c release --product "${EXECUTABLE}" --show-bin-path)/${EXECUTABLE}"
+BIN_DIR="$(swift build -c release --product "${EXECUTABLE}" --show-bin-path)"
+BIN_PATH="${BIN_DIR}/${EXECUTABLE}"
+CORE_RESOURCE_BUNDLE="${BIN_DIR}/${EXECUTABLE}_HerdrCore.bundle"
 
 echo "▶ Assembling ${APP}…"
 rm -rf "${APP}"
 mkdir -p "${APP}/Contents/MacOS" "${APP}/Contents/Resources"
 
 cp "${BIN_PATH}" "${APP}/Contents/MacOS/${EXECUTABLE}"
+cp -R "${CORE_RESOURCE_BUNDLE}" "${APP}/Contents/Resources/"
 cp Resources/Info.plist "${APP}/Contents/Info.plist"
 printf 'APPL????' > "${APP}/Contents/PkgInfo"
 
